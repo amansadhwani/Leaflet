@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My First Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <!--[if lte IE 8]>
+	     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+	 <![endif]-->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+</head>
+
+<body>
+
+    <!-- define a the area the map will go into. Feel free to change the size as needed -->
+    <div id="map" style="width:800px; height: 500px;"></div>
+    <script>
+
+        let map = L.map('map').setView([20.59, 78.96], 5);
+
+        let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        })
+        osm.addTo(map)
+
+        let Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+            attribution: 'Map tiles by <a href="http://stamen.com">AMAN</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            subdomains: 'abcd',
+            minZoom: 1,
+            maxZoom: 16,
+            ext: 'jpg'
+        });
+
+        // Stamen_Watercolor.addTo(map)
+
+        //reference https://gis.stackexchange.com/questions/225098/using-google-maps-static-tiles-with-leaflet
+
+        let googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+
+        //googleStreets.addTo(map)
+
+        //marker map
+
+        L.marker([20.59, 78.96]).addTo(map);
+
+        // marker popup 
+        let nadiadMarker = L.marker([22.69, 72.86], { draggable: true })
+        let markerPopup = nadiadMarker.bindPopup("Nadiad" + nadiadMarker.getLatLng()).openPopup()
+        markerPopup.addTo(map)
+
+        // layer control used to combine all types of map so we can toggle accordingly
+        // starts
+        var baseLayers = {
+            "water map": Stamen_Watercolor,
+            "OpenStreetMap": osm,
+            "google street":googleStreets
+        };
+
+        var overlays = {
+            "Nadiad Marker": nadiadMarker,
+        };
+
+        L.control.layers(baseLayers, overlays).addTo(map);
+
+        // ends 
+
+        // events
+
+        map.on('mousemove',function(e){
+            console.log("mouse move",e.latlng)
+        })
+
+    </script>
+
+</body>
+
+</html>
